@@ -18,7 +18,7 @@ switch(lower(option))
         if ndata>1
             Aud=cell(1,ndata);Som=cell(1,ndata);Outline=cell(1,ndata);af=cell(1,ndata);
             for n1=1:size(Art,2),
-                [Aud{n1},Som{n1},Outline{n1}]=diva_synth_sample(Art(:,n1));
+                [Aud{n1},Som{n1},Outline{n1},af{n1}]=diva_synth_sample(Art(:,n1));
             end
             Aud=cat(2,Aud{:});
             Som=cat(2,Som{:});

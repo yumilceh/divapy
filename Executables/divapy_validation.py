@@ -72,7 +72,7 @@ if __name__ == '__main__':
     for i in range(n_static_sound_test):
         m_tmp = static_commands[i, :]
         arts = np.tile(m_tmp, (80, 1))
-        mldiva_synth.getSoundWave(arts)
+        mldiva_synth.get_sound(arts)
 
         sound_wave, af = pydiva_synth.get_sound(arts)
         # try:
@@ -100,7 +100,7 @@ if __name__ == '__main__':
     for i in range(n_random_sound_test):
         arts = get_random_motor_set(mldiva_synth, 80)
 
-        mldiva_synth.getSoundWave(arts)
+        mldiva_synth.get_sound(arts)
         try:
             sound_wave, af = pydiva_synth.get_sound(arts)
         except ValueError:

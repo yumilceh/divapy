@@ -27,21 +27,22 @@ if __name__ == '__main__':
     # arts = np.tile(arts, (60,1))
 
     arts = h5_to_ndarray('arts','../data/hard_arts.h5')
-
-    aud, af = diva_synth.get_sound(arts)
+    print(arts)
+    aud = diva_synth.get_sound(arts)
     sio.savemat('../DivaMatlab/soundtest.mat', {'Arts2': arts, 'Aud2':aud})
-     
-    pa = pyaudio.PyAudio()
-    stream = pa.open(format=pyaudio.paFloat32,
-                     channels=1,
-                     rate=11025,
-                     output=True)
-    stream.start_stream()
-    stream.write(aud.astype(np.float32).tostring())
 
+    diva_synth.play_sound(aud)
+
+    print(len(aud))
     plt.plot(aud)
     plt.show()
 
     time.sleep(1)
-    stream.close()
-    pa.terminate()
+
+
+    # arts = np.array([0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,0.1,1,1,1])
+    #
+    # sound = diva_synth.get_static_sound(arts)
+    #
+    #
+    # print(len(sound))

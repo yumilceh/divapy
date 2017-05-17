@@ -19,6 +19,10 @@ from numpy import tanh, array, fft
 from scipy.io import loadmat as loadmat
 from numpy_groupies.aggregate_weave import aggregate
 from voiceboxpy import glotlf
+from scipy.io.wavfile import write
+import time
+
+import matplotlib.pyplot as plt
 
 eps = np.finfo(np.float32).eps
 global_noise = False
@@ -118,7 +122,7 @@ class Diva(object):
         synth.voicing = 1.
         synth.pressurebuildup = 0.
         synth.pressure0 = 0.
-        synth.sample = np.zeros((synth.samplesperperiod,))
+        synth.sample = np.zeros((synth.samplesperperiod,))#VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
         synth.k1 = 1
         synth.numberofperiods = 1
         synth.samplesoutput = 0
@@ -139,14 +143,14 @@ class Diva(object):
         ndata = art.shape[0]
         dt = 0.005
         time = 0.
-        s = np.zeros((np.ceil((ndata + 1) * dt * synth.fs),))
+        s = np.zeros((np.ceil((ndata + 1) * dt * synth.fs),))#VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
 
         while time < (ndata) * dt:
             t0 = np.floor(time / dt)
             t1 = (time - t0 * dt) / dt
 
-            dummy1, dummy2, dummy3, af1, d = self.get_sample(art[np.minimum(ndata - 1, 0 + t0), :])
-            dummy1, dummy2, dummy3, af2, d = self.get_sample(art[np.minimum(ndata - 1, 1 + t0), :])
+            dummy1, dummy2, dummy3, af1, d = self.get_sample(art[np.minimum(ndata - 1, 0 + t0), :])#VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
+            dummy1, dummy2, dummy3, af2, d = self.get_sample(art[np.minimum(ndata - 1, 1 + t0), :])#_VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
 
             naf1 = len(af1)
             naf2 = len(af2)
@@ -156,7 +160,7 @@ class Diva(object):
                 af1 = np.concatenate((af1, np.repeat(af1[-1], naf2 - naf1)))
             af = af1 * (1 - t1) + af2 * t1
 
-            FPV = art[np.minimum(ndata - 1, t0), -3:] * (1 - t1) + art[np.minimum(ndata - 1, 1 + t0), -3:] * t1
+            FPV = art[np.minimum(ndata - 1, t0), -3:] * (1 - t1) + art[np.minimum(ndata - 1, 1 + t0), -3:] * t1#VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
             FPV = np.minimum(np.ones((1, 3)), FPV)
             FPV = np.maximum(-1 * np.ones((1, 3)), FPV)
             FPV = FPV.flatten()
@@ -342,7 +346,7 @@ class Diva(object):
             synth.numberofperiods = np.max((1, numberofperiods))
 
         s = s[0:int(np.ceil(synth.fs * ndata * dt))]
-        return s, af
+        return s#, af
 
     def get_sample(self, art):
         """
@@ -416,8 +420,8 @@ class Diva(object):
             idx_2 = np.concatenate((idx_2, (amax - 1) * np.ones((25,))))
             idx_2 = idx_2.tolist()
 
-            ab_alpha = np.convolve(ab_alpha[idx_2], h, 'valid')
-            ab_beta = np.convolve(ab_beta[idx_2], h, 'valid')
+            ab_alpha = np.convolve(ab_alpha[idx_2], h, 'valid')#VisibleDeprecationWarning: non integer (and non boolean) array-likes will not be accepted as indices in the future
+            ab_beta = np.convolve(ab_beta[idx_2], h, 'valid')#VisibleDeprecationWarning: non integer (and non boolean) array-likes will not be accepted as indices in the future
             self.ab_alpha = ab_alpha
             self.ab_beta = ab_beta
 
@@ -533,94 +537,94 @@ class Diva(object):
                 break
         return a, b, sc, af, d
 
-    def a2h_(self, a, l, n, fs=None, closure=None, mina=None):  # Original function
-        if not isinstance(mina, float):
-            mina = np.amin(a, axis=0)
-        if not isinstance(closure, float) and not isinstance(closure, int):
-            closure = 0
-        if not isinstance(fs, float) and not isinstance(fs, int):
-            fs = 11025.
-        # if np.sum(len(np.where(a.shape>1))) <= 1:
-        if not isinstance(a, np.ndarray):
-            # a = a.flatten('F')
-            N, M = (1, 1)
-        else:
-            if len(a.shape) == 1:
-                N = a.shape[0]
-                M = 1
-            else:
-                N, M = a.shape
-
-        # if not np.sum(len(np.where(l.shape>1))) <= 1:
-        if not isinstance(l, np.ndarray):
-            # l = l.flatten('F')
-            NL, ML = (1, 1)
-        else:
-            NL, ML = l.shape
-
-        c = 34326.  # % speed of sound (cm/s)
-
-        m = int(np.ceil(n / 2.) + 1)
-        f = fs * array(range(int(np.ceil(n / 2.) + 1))) / float(n)
-        t = l / c
-        Rrad = 0.9 * np.exp(-(np.abs(f) / 4.0e3) ** 2)  # % reflection at lips (low pass)
-        H = np.zeros((m, M)) + 0j * np.zeros((m, M))  # %H=zeros(n,M);
-        Hc = np.zeros((m, M)) + 0j * np.zeros((m, M))
-        if mina == 0:
-            a = array([np.max((0.05, x)) for x in a])
-        # %k=0.995;%.999;
-        for nM in range(M):
-            # if 1: #%mina(nM)>0,
-            coswt = np.cos(2 * np.pi * f * sub_array(t, idx_y=np.min((ML, nM)) - 1))
-            sinwt = 1j * np.sin(2 * np.pi * f * sub_array(t, idx_y=np.min((ML, nM)) - 1))
-            # R=[.9;(a(2:N,nM)-a(1:N-1,nM))./max(eps,a(2:N,nM)+a(1:N-1,nM))];
-            R = np.concatenate(([0.9], np.divide(sub_array(a, idx_x=range(1, N, 1), idx_y=nM - 1) \
-                                                 - sub_array(a, idx_x=range(N - 1), idx_y=nM - 1), \
-                                                 np.maximum(eps * np.ones((N - 1,)),
-                                                            sub_array(a, idx_x=range(1, N, 1), idx_y=nM - 1) \
-                                                            + sub_array(a, idx_x=range(N - 1), idx_y=nM - 1)))))
-
-            U = coswt + sinwt
-            V = coswt - sinwt
-
-            h1 = np.ones((m,))  # % signal at glottis   #In this part of the code there are diferences w.r.t. MATLAB,
-            h2 = np.zeros((m,))
-            for nN in range(N - 1):
-                RnN = -R[nN]
-                u = h1 + RnN * h2
-                v = h2 + RnN * h1  # % reflection
-                if closure == nN:
-                    Hc[:, nM] = u - v
-                if NL == 1:
-                    h1 = np.multiply(U, u)
-                    h2 = np.multiply(V, v)  # % delay
-                else:  # This part of the code has not been tested
-                    h1 = np.multiply(U[:, nN], u)
-                    h2 = np.multiply(V[:, nN], v)
-
-            u = h1 - np.multiply(Rrad, h2)
-            h = u
-            if closure >= N - 1:  # Indexing here must be debugged
-                Hc[:, nM] = u - (h2 - np.multiply(Rrad, h1))
-
-            H[:, nM] = np.divide(np.multiply((np.ones((Rrad.shape)) + Rrad), np.prod(np.ones((R.shape)) + R)),
-                                 sub_array(u, idx_y=0))
-            if closure > 0 - 1:  # Hot point for indexing
-                Hc[:, nM] = np.divide(np.multiply((np.ones((Rrad.shape)) + Rrad), \
-                                                  np.prod(np.ones((N - closure - 1,)) + R[closure + 1:N]) * Hc[:, nM]), \
-                                      sub_array(h, idx_y=0))
-
-        idxH_x = [x + 1 for x in range(n - m - 1, -1, -1)]
-
-        H = np.concatenate((H, np.conjugate(H[idxH_x, :])), axis=0)
-
-        Hc = np.concatenate((Hc, np.conjugate(Hc[idxH_x, :])), axis=0)
-
-        f = np.concatenate((f, -f[idxH_x]))
-        if mina == 0:
-            H = 0 * H
-
-        return H, f, Hc
+    # def a2h_(self, a, l, n, fs=None, closure=None, mina=None):  # To be deleted (Original function)
+    #     if not isinstance(mina, float):
+    #         mina = np.amin(a, axis=0)
+    #     if not isinstance(closure, float) and not isinstance(closure, int):
+    #         closure = 0
+    #     if not isinstance(fs, float) and not isinstance(fs, int):
+    #         fs = 11025.
+    #     # if np.sum(len(np.where(a.shape>1))) <= 1:
+    #     if not isinstance(a, np.ndarray):
+    #         # a = a.flatten('F')
+    #         N, M = (1, 1)
+    #     else:
+    #         if len(a.shape) == 1:
+    #             N = a.shape[0]
+    #             M = 1
+    #         else:
+    #             N, M = a.shape
+    #
+    #     # if not np.sum(len(np.where(l.shape>1))) <= 1:
+    #     if not isinstance(l, np.ndarray):
+    #         # l = l.flatten('F')
+    #         NL, ML = (1, 1)
+    #     else:
+    #         NL, ML = l.shape
+    #
+    #     c = 34326.  # % speed of sound (cm/s)
+    #
+    #     m = int(np.ceil(n / 2.) + 1)
+    #     f = fs * array(range(int(np.ceil(n / 2.) + 1))) / float(n)
+    #     t = l / c
+    #     Rrad = 0.9 * np.exp(-(np.abs(f) / 4.0e3) ** 2)  # % reflection at lips (low pass)
+    #     H = np.zeros((m, M)) + 0j * np.zeros((m, M))  # %H=zeros(n,M);
+    #     Hc = np.zeros((m, M)) + 0j * np.zeros((m, M))
+    #     if mina == 0:
+    #         a = array([np.max((0.05, x)) for x in a])
+    #     # %k=0.995;%.999;
+    #     for nM in range(M):
+    #         # if 1: #%mina(nM)>0,
+    #         coswt = np.cos(2 * np.pi * f * sub_array(t, idx_y=np.min((ML, nM)) - 1))
+    #         sinwt = 1j * np.sin(2 * np.pi * f * sub_array(t, idx_y=np.min((ML, nM)) - 1))
+    #         # R=[.9;(a(2:N,nM)-a(1:N-1,nM))./max(eps,a(2:N,nM)+a(1:N-1,nM))];
+    #         R = np.concatenate(([0.9], np.divide(sub_array(a, idx_x=range(1, N, 1), idx_y=nM - 1) \
+    #                                              - sub_array(a, idx_x=range(N - 1), idx_y=nM - 1), \
+    #                                              np.maximum(eps * np.ones((N - 1,)),
+    #                                                         sub_array(a, idx_x=range(1, N, 1), idx_y=nM - 1) \
+    #                                                         + sub_array(a, idx_x=range(N - 1), idx_y=nM - 1)))))
+    #
+    #         U = coswt + sinwt
+    #         V = coswt - sinwt
+    #
+    #         h1 = np.ones((m,))  # % signal at glottis   #In this part of the code there are diferences w.r.t. MATLAB,
+    #         h2 = np.zeros((m,))
+    #         for nN in range(N - 1):
+    #             RnN = -R[nN]
+    #             u = h1 + RnN * h2
+    #             v = h2 + RnN * h1  # % reflection
+    #             if closure == nN:
+    #                 Hc[:, nM] = u - v
+    #             if NL == 1:
+    #                 h1 = np.multiply(U, u)
+    #                 h2 = np.multiply(V, v)  # % delay
+    #             else:  # This part of the code has not been tested
+    #                 h1 = np.multiply(U[:, nN], u)
+    #                 h2 = np.multiply(V[:, nN], v)
+    #
+    #         u = h1 - np.multiply(Rrad, h2)
+    #         h = u
+    #         if closure >= N - 1:  # Indexing here must be debugged
+    #             Hc[:, nM] = u - (h2 - np.multiply(Rrad, h1))
+    #
+    #         H[:, nM] = np.divide(np.multiply((np.ones((Rrad.shape)) + Rrad), np.prod(np.ones((R.shape)) + R)),
+    #                              sub_array(u, idx_y=0))
+    #         if closure > 0 - 1:  # Hot point for indexing
+    #             Hc[:, nM] = np.divide(np.multiply((np.ones((Rrad.shape)) + Rrad), \
+    #                                               np.prod(np.ones((N - closure - 1,)) + R[closure + 1:N]) * Hc[:, nM]), \
+    #                                   sub_array(h, idx_y=0))
+    #
+    #     idxH_x = [x + 1 for x in range(n - m - 1, -1, -1)]
+    #
+    #     H = np.concatenate((H, np.conjugate(H[idxH_x, :])), axis=0)
+    #
+    #     Hc = np.concatenate((Hc, np.conjugate(Hc[idxH_x, :])), axis=0)
+    #
+    #     f = np.concatenate((f, -f[idxH_x]))
+    #     if mina == 0:
+    #         H = 0 * H
+    #
+    #     return H, f, Hc%
 
     def a2h(self, a, l, n, fs=None, closure=None, mina=None):  # New function
         if not isinstance(mina, float):
@@ -721,15 +725,52 @@ class Diva(object):
 
         return H_tmp, f_tmp, Hc_tmp
 
+    def plot_outline(self, art, axes=None):
+        return_fig = False
+        if axes is None:
+            fig, axes = plt.subplots(1,1)
+            return_fig = True
+        a,b,outline,d = self.get_audsom(art)
+
+        plt.sca(axes)
+        plt.plot(np.real(outline),np.imag(outline))
+        plt.axis('off')
+        # plt.plot(-np.flipud(np.real(outline)), np.flipud(np.imag(outline)))
+        if return_fig:
+            return fig, axes
+        else:
+            return axes
+
+    def get_static_sound(self, art, play=False, ts = 0.005, time_=0.4):
+        n_samples = time_/ts
+        arts  = np.array([list(art)] * int(n_samples))
+        return self.get_sound(arts)
+
+    def play_sound(self, sound):  # keep in mind that DivaMatlab works with ts=0.005
+        import pyaudio
+        self.pa = pyaudio.PyAudio()  # If pa and stream are not elements of the self object then sound does not play
+        self.stream = self.pa.open(format=pyaudio.paFloat32,
+                                   channels=1,
+                                   rate=11025,
+                                   output=True)
+        self.stream.start_stream()
+        self.stream.write(sound.astype(np.float32).tostring())
+        # time.sleep(0.4)
+
+    def release_audio_device(self):  # any sound in the buffer will be removed
+        try:
+            self.stream.close()
+            self.pa.terminate()
+        except:
+            pass
+
 
 def arr_minus_noise(arr, noise_magnitude=0.):
     if global_noise:
         return array([x - random.random() for x in arr])
 
-
 def arr_plus_cte(arr, cte):
     return array([x + cte for x in arr])
-
 
 def sub_array(x, idx_x=np.inf, idx_y=np.inf):
     # This function supports floats, array(n,1) or array(n > 1, m > 1)

@@ -52,35 +52,41 @@ class Diva(object):
         self.matlabSession.run(command_)  # Path to DivaMatlab functions
         self.matlabSession.putvalue('outputScale', output_scale)
 
-    def set_action(self, motor_command):
-        self.motor_command = motor_command
+    def get_audsom(self, art, scale=True):
+        self.matlabSession.putvalue('art', art)
+        self.matlabSession.run('[aud, Som, outline, af] = diva_synth(art\',\'audsom\')')
+        aud =  np.transpose(self.matlabSession.getvalue('aud'))
+        som = np.transpose(self.matlabSession.getvalue('Som'))
+        outline = np.transpose(self.matlabSession.getvalue('outline'))
+        af_ = self.matlabSession.getvalue('af')
+        af = []
+        for i in range(art.shape[0]):
+            af += [af_[:,i]]
 
-    def vocalize(self):
-        self.matlabSession.putvalue('art', self.motor_command)
-        self.matlabSession.run('[aud, Som, outline, af] = diva_synth(art)')
-        aud = self.matlabSession.getvalue('aud').flatten()
-        som = self.matlabSession.getvalue('Som').flatten()
-        outline = self.matlabSession.getvalue('outline').flatten()
-        af = self.matlabSession.getvalue('af').flatten()
+        return aud, som, outline, af
 
-        self.aud = aud
-        self.som = som
-        self.outline = outline
-        self.af = af
-
-    def getSoundWave(self, arts, play=0, save=0, file_name='vt'):  # based on explauto
+    def get_sound(self, arts, play=0, save=0, file_name='vt'):  # based on explauto
         ts = 0.005
         # arts ->   n_samples * 13
 
         self.matlabSession.putvalue('artStates', arts)
 
         self.matlabSession.run('sound_wave = diva_synth(artStates\', \'sound\')')
-        self.sound_wave = self.matlabSession.getvalue('sound_wave')
         if (play):
             self.play_sound()
         if (save):
             scaled = np.int16(self.sound_wave / np.max(np.abs(self.sound_wave)) * 32767)
             write(file_name + '.wav', 11025, scaled)
+
+        sound = self.matlabSession.getvalue('sound_wave')
+        return sound
+
+
+    def get_static_sound(self, art, ts = 0.005, time=0.4):
+        n_samples = time/ts
+        arts  = np.repeat([art], n_samples, axis=1)
+        #print(arts)
+        return self.get_sound(arts)
 
     def plot_sound(self, ax=None):
         if type(ax) is type(None):

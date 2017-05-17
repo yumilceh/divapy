@@ -31,7 +31,13 @@ if __name__ == '__main__':
     aud, som, outline, af = diva_synth.get_audsom(arts)
     # sio.savemat('../DivaMatlab/soundtest.mat', {'Arts2': arts, 'Aud2':aud})
 
+    plt.figure()
     plt.plot(aud)
+    plt.figure()
+    plt.plot(som)
+    plt.figure()
+    plt.plot(arts)
     plt.show()
 
+    print(aud)
     time.sleep(1)

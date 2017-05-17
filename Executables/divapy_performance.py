@@ -70,7 +70,7 @@ if __name__ == '__main__':
     for i in range(n_static_sound_test):
         m_tmp = static_commands[i, :]
         arts = np.tile(m_tmp, (80, 1))
-        mldiva_synth.getSoundWave(arts)
+        mldiva_synth.get_sound(arts)
     elapsed_ml = time.time() - t
 
     t = time.time()

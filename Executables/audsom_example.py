@@ -10,7 +10,7 @@ import h5py, time, pyaudio
 import numpy as np
 import matplotlib.pyplot as plt
 import scipy.io as sio
-from divapy import Diva
+from divaml import Diva
 
 
 def h5_to_ndarray(key_, file_name):

@@ -54,14 +54,21 @@ class Diva(object):
 
     def get_audsom(self, art, scale=True):
         self.matlabSession.putvalue('art', art)
-        self.matlabSession.run('[aud, Som, outline, af] = diva_synth(art\',\'audsom\')')
+        if len(art.shape)>1:
+            self.matlabSession.run('[aud, Som, outline, af] = diva_synth(art\',\'audsom\')')
+        else:
+            self.matlabSession.run('[aud, Som, outline, af] = diva_synth(art,\'audsom\')')
         aud =  np.transpose(self.matlabSession.getvalue('aud'))
         som = np.transpose(self.matlabSession.getvalue('Som'))
         outline = np.transpose(self.matlabSession.getvalue('outline'))
         af_ = self.matlabSession.getvalue('af')
-        af = []
-        for i in range(art.shape[0]):
-            af += [af_[:,i]]
+
+        if len(art.shape)>1:
+            af = []
+            for i in range(art.shape[0]):
+                af += [af_[:,i]]
+        else:
+            af = af_
 
         return aud, som, outline, af
 

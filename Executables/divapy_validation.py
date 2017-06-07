@@ -3,7 +3,7 @@ Created on Feb 20, 2017
 
 @author: Juan Manuel Acevedo Valle
 
-Script used to compare the Diva's python implementation agains the original implementation
+Script used to compare the Diva's python implementation against the original implementation
 in Matlab
 '''
 import numpy as np

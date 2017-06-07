@@ -12,18 +12,9 @@ doi: 10.1109/TCDS.2017.2699578
 
 ### How do I get set up? ###
 
-* Summary of set up
-* Configuration
-* Dependencies: [numpy](http://www.numpy.org/), [numpy_groupies](https://pypi.python.org/pypi/numpy_groupies), [scipy](https://www.scipy.org/)
-* Database configuration
-* How to run tests
-* Deployment instructions
-
-### Contribution guidelines ###
-
-* Writing tests
-* Code review
-* Other guidelines
+* It is recommended to add the package to your Python path.
+* Dependencies: [numpy](http://www.numpy.org/), [numpy_groupies](https://pypi.python.org/pypi/numpy_groupies), [scipy](https://www.scipy.org/), [pyaudio](https://pypi.python.org/pypi/PyAudio).
+* Examples of use are available for [Python executables](https://github.com/yumilceh/divapy/tree/master/Executables) and for [Jupyter notebooks](https://github.com/yumilceh/divapy/tree/master/Notebooks).
 
 ### Who do I talk to? ###
 

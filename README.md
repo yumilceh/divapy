@@ -2,8 +2,10 @@
 
 DIVA Vocal tract. Python migration. Implemented as part of:
 
-J. M. Acevedo-Valle; C. Angulo; C. Moulin-Frier, ["Autonomous Discovery of Motor Constraints in an Intrinsically-Motivated Vocal Learner,"](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7914655&isnumber=7422051) in IEEE Transactions on Cognitive and Developmental Systems , vol.PP, no.99, pp.1-1
+* J. M. Acevedo-Valle; C. Angulo; C. Moulin-Frier, ["Autonomous Discovery of Motor Constraints in an Intrinsically-Motivated Vocal Learner,"](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7914655&isnumber=7422051) in IEEE Transactions on Cognitive and Developmental Systems , vol.PP, no.99, pp.1-1
 doi: 10.1109/TCDS.2017.2699578
+
+* J. M. Acevedo-Valle; V. Hafner, C. Angulo, "Social Reinforcement in Intrinsically Motivated Sensorimotor Exploration for Embodied Agents with Constraints Awareness." In _Development and Learning and Epigenetic Robotics (ICDL-Epirob), 2017 Joint IEEE International Conferences_. IEEE, 2017.
 
 ### What is this repository for? ###
 

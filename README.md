@@ -13,7 +13,7 @@ doi: 10.1109/TCDS.2017.2699578
 ### How do I get set up? ###
 
 * It is recommended to add the package to your Python path.
-* Dependencies: [numpy](http://www.numpy.org/), [numpy_groupies](https://pypi.python.org/pypi/numpy_groupies), [scipy](https://www.scipy.org/), [pyaudio](https://pypi.python.org/pypi/PyAudio).
+* Dependencies: [numpy](http://www.numpy.org/), [numpy_groupies](https://pypi.python.org/pypi/numpy_groupies), [scipy](https://www.scipy.org/), [pyaudio](https://pypi.python.org/pypi/PyAudio), [ipywidgets](https://ipywidgets.readthedocs.io/en/latest/user_install.html).
 * Examples of use are available for [Python executables](https://github.com/yumilceh/divapy/tree/master/Executables) and for [Jupyter notebooks](https://github.com/yumilceh/divapy/tree/master/Notebooks).
 
 ### Who do I talk to? ###

@@ -732,8 +732,7 @@ class Diva(object):
             return_fig = True
         a,b,outline,d = self.get_audsom(art)
 
-        plt.sca(axes)
-        plt.plot(np.real(outline),np.imag(outline))
+        axes.plot(np.real(outline),np.imag(outline))
         plt.axis('off')
         # plt.plot(-np.flipud(np.real(outline)), np.flipud(np.imag(outline)))
         if return_fig:

@@ -110,9 +110,9 @@ class Diva(object):
         synth.fs = 11025.
         synth.update_fs = 200.  # Sample frequency
         synth.f0 = 120.
-        synth.samplesperperiod = np.ceil(synth.fs / synth.f0)
+        synth.samplesperperiod = np.ceil(synth.fs / synth.f0).astype(int)
 
-        glt_in = array(np.arange(0, 1, 1 / synth.samplesperperiod))
+        glt_in = array(np.arange(0, 1, 1. / synth.samplesperperiod))
         synth.glottalsource = glotlf(0, glt_in)
 
         synth.f = array([0, 1])
@@ -143,11 +143,11 @@ class Diva(object):
         ndata = art.shape[0]
         dt = 0.005
         time = 0.
-        s = np.zeros((np.ceil((ndata + 1) * dt * synth.fs),))#VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
+        s = np.zeros((int(np.ceil((ndata + 1) * dt * synth.fs)),))#VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
 
         while time < (ndata) * dt:
-            t0 = np.floor(time / dt)
-            t1 = (time - t0 * dt) / dt
+            t0 = int(np.floor(time / dt))
+            t1 = int((time - t0 * dt) / dt)
 
             dummy1, dummy2, dummy3, af1, d = self.get_sample(art[np.minimum(ndata - 1, 0 + t0), :])#VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
             dummy1, dummy2, dummy3, af2, d = self.get_sample(art[np.minimum(ndata - 1, 1 + t0), :])#_VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
@@ -402,7 +402,7 @@ class Diva(object):
     def xy2ab(self, x, y=False):
         # x -> Outline (column matrix)
         if not hasattr(self, 'ab_alpha'):
-            amax = 220
+            amax = int(220)
             alpha = array([1, 1, 1, 1, 1, 1, 1])
             beta = array([.25, 1.25, 1.25, 1.25, 1.25, 1.25, 1.25])
             idx = [range(60), range(60, 70), range(70, 80), range(80, 120), range(120, 150), range(150, 190),
@@ -416,8 +416,8 @@ class Diva(object):
             h = self.hanning.flatten()
             # h = hanning(51)/np.sum(hanning(51)) #Not same result as in hanning (matlab hann vs hanning)
             idx_2 = np.zeros((25,))
-            idx_2 = np.concatenate((idx_2, np.array(range(amax))))
-            idx_2 = np.concatenate((idx_2, (amax - 1) * np.ones((25,))))
+            idx_2 = np.concatenate((idx_2, np.array(range(amax)))).astype(int)
+            idx_2 = np.concatenate((idx_2, (amax - 1) * np.ones((25,)))).astype(int)
             idx_2 = idx_2.tolist()
 
             ab_alpha = np.convolve(ab_alpha[idx_2], h, 'valid')#VisibleDeprecationWarning: non integer (and non boolean) array-likes will not be accepted as indices in the future
@@ -471,8 +471,8 @@ class Diva(object):
         iall = range(163, 302)
         xmin = -20
         ymin = -160
-        amin = ymin - y0
-        amax = np.ceil((x0 - xmin + k - amin))  # here is the variability of the af vector
+        amin = int(ymin - y0)
+        amax = int(np.ceil((x0 - xmin + k - amin)))  # here is the variability of the af vector
 
         fact = 3
 
@@ -498,9 +498,9 @@ class Diva(object):
         w = 2
 
         idx_ab1 = np.int_(np.maximum(np.zeros((len(oall),)),
-                                     np.minimum((amax - 1) * np.ones((len(oall),)), np.round(a[oall] - amin - 1))))
+                                     np.minimum((amax - 1) * np.ones((len(oall),)), np.round(a[oall] - amin - 1)))).astype(int)
         idx_ab2 = np.int_(np.maximum(np.zeros((len(iall),)),
-                                     np.minimum((amax - 1) * np.ones((len(iall),)), np.round(a[iall] - amin - 1))))
+                                     np.minimum((amax - 1) * np.ones((len(iall),)), np.round(a[iall] - amin - 1)))).astype(int)
 
         ab1 = aggregate(idx_ab1, b[oall], size=amax, func='min', fill_value=None)
         ab2 = aggregate(idx_ab2, b[iall], size=amax, func='max', fill_value=None)

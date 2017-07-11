@@ -29,6 +29,7 @@ global_noise = False
 
 diva_output_scale = [100.0, 500.0, 1500.0, 3000.0]
 
+
 class Object(object):
     pass
 
@@ -62,7 +63,7 @@ class Diva(object):
         self.vt = vt
         self.fmfit = fmfit
 
-    def get_audsom(self, art, scale = False):
+    def get_audsom(self, art, scale=False):
         """
             Input:
                 art n_samples x n_articulators(13) [ndarray]
@@ -76,18 +77,18 @@ class Diva(object):
 
         if len(art.shape) > 1:
             n_samples = art.shape[0]
-            aud = np.zeros((n_samples,4))
-            som = np.zeros((n_samples,8))
+            aud = np.zeros((n_samples, 4))
+            som = np.zeros((n_samples, 8))
             outline = []
             af = []
             d = []
             for i in range(n_samples):
-                aud_, som_, outline_, af_, d_ = self.get_sample(art[i,:])
+                aud_, som_, outline_, af_, d_ = self.get_sample(art[i, :])
                 if scale:
-                    aud[i,:] = np.divide(aud_, diva_output_scale)
+                    aud[i, :] = np.divide(aud_, diva_output_scale)
                 else:
-                    aud[i,:] = aud_
-                som[i,:] = som_
+                    aud[i, :] = aud_
+                som[i, :] = som_
                 outline += [outline_]
                 af += [af_]
                 # d += [d_]
@@ -122,7 +123,8 @@ class Diva(object):
         synth.voicing = 1.
         synth.pressurebuildup = 0.
         synth.pressure0 = 0.
-        synth.sample = np.zeros((synth.samplesperperiod,))#VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
+        synth.sample = np.zeros((
+                                synth.samplesperperiod,))  # VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
         synth.k1 = 1
         synth.numberofperiods = 1
         synth.samplesoutput = 0
@@ -143,14 +145,17 @@ class Diva(object):
         ndata = art.shape[0]
         dt = 0.005
         time = 0.
-        s = np.zeros((int(np.ceil((ndata + 1) * dt * synth.fs)),))#VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
+        s = np.zeros((int(np.ceil((
+                                  ndata + 1) * dt * synth.fs)),))  # VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
 
         while time < (ndata) * dt:
             t0 = int(np.floor(time / dt))
             t1 = int((time - t0 * dt) / dt)
 
-            dummy1, dummy2, dummy3, af1, d = self.get_sample(art[np.minimum(ndata - 1, 0 + t0), :])#VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
-            dummy1, dummy2, dummy3, af2, d = self.get_sample(art[np.minimum(ndata - 1, 1 + t0), :])#_VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
+            dummy1, dummy2, dummy3, af1, d = self.get_sample(art[np.minimum(ndata - 1, 0 + t0),
+                                                             :])  # VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
+            dummy1, dummy2, dummy3, af2, d = self.get_sample(art[np.minimum(ndata - 1, 1 + t0),
+                                                             :])  # _VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
 
             naf1 = len(af1)
             naf2 = len(af2)
@@ -160,7 +165,8 @@ class Diva(object):
                 af1 = np.concatenate((af1, np.repeat(af1[-1], naf2 - naf1)))
             af = af1 * (1 - t1) + af2 * t1
 
-            FPV = art[np.minimum(ndata - 1, t0), -3:] * (1 - t1) + art[np.minimum(ndata - 1, 1 + t0), -3:] * t1#VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
+            FPV = art[np.minimum(ndata - 1, t0), -3:] * (1 - t1) + art[np.minimum(ndata - 1, 1 + t0),
+                                                                   -3:] * t1  # VisibleDeprecationWarning: using a non-integer number instead of an integer will result in an error in the future
             FPV = np.minimum(np.ones((1, 3)), FPV)
             FPV = np.maximum(-1 * np.ones((1, 3)), FPV)
             FPV = FPV.flatten()
@@ -346,7 +352,7 @@ class Diva(object):
             synth.numberofperiods = np.max((1, numberofperiods))
 
         s = s[0:int(np.ceil(synth.fs * ndata * dt))]
-        return s#, af
+        return s  # , af
 
     def get_sample(self, art):
         """
@@ -420,8 +426,10 @@ class Diva(object):
             idx_2 = np.concatenate((idx_2, (amax - 1) * np.ones((25,)))).astype(int)
             idx_2 = idx_2.tolist()
 
-            ab_alpha = np.convolve(ab_alpha[idx_2], h, 'valid')#VisibleDeprecationWarning: non integer (and non boolean) array-likes will not be accepted as indices in the future
-            ab_beta = np.convolve(ab_beta[idx_2], h, 'valid')#VisibleDeprecationWarning: non integer (and non boolean) array-likes will not be accepted as indices in the future
+            ab_alpha = np.convolve(ab_alpha[idx_2], h,
+                                   'valid')  # VisibleDeprecationWarning: non integer (and non boolean) array-likes will not be accepted as indices in the future
+            ab_beta = np.convolve(ab_beta[idx_2], h,
+                                  'valid')  # VisibleDeprecationWarning: non integer (and non boolean) array-likes will not be accepted as indices in the future
             self.ab_alpha = ab_alpha
             self.ab_beta = ab_beta
 
@@ -498,9 +506,11 @@ class Diva(object):
         w = 2
 
         idx_ab1 = np.int_(np.maximum(np.zeros((len(oall),)),
-                                     np.minimum((amax - 1) * np.ones((len(oall),)), np.round(a[oall] - amin - 1)))).astype(int)
+                                     np.minimum((amax - 1) * np.ones((len(oall),)),
+                                                np.round(a[oall] - amin - 1)))).astype(int)
         idx_ab2 = np.int_(np.maximum(np.zeros((len(iall),)),
-                                     np.minimum((amax - 1) * np.ones((len(iall),)), np.round(a[iall] - amin - 1)))).astype(int)
+                                     np.minimum((amax - 1) * np.ones((len(iall),)),
+                                                np.round(a[iall] - amin - 1)))).astype(int)
 
         ab1 = aggregate(idx_ab1, b[oall], size=amax, func='min', fill_value=None)
         ab2 = aggregate(idx_ab2, b[iall], size=amax, func='max', fill_value=None)
@@ -728,11 +738,11 @@ class Diva(object):
     def plot_outline(self, art, axes=None):
         return_fig = False
         if axes is None:
-            fig, axes = plt.subplots(1,1)
+            fig, axes = plt.subplots(1, 1)
             return_fig = True
-        a,b,outline,d = self.get_audsom(art)
+        a, b, outline, d = self.get_audsom(art)
 
-        axes.plot(np.real(outline),np.imag(outline))
+        axes.plot(np.real(outline), np.imag(outline))
         plt.axis('off')
         # plt.plot(-np.flipud(np.real(outline)), np.flipud(np.imag(outline)))
         if return_fig:
@@ -740,13 +750,14 @@ class Diva(object):
         else:
             return axes
 
-    def get_static_sound(self, art, play=False, ts = 0.005, time_=0.4):
-        n_samples = time_/ts
-        arts  = np.array([list(art)] * int(n_samples))
+    def get_static_sound(self, art, play=False, ts=0.005, time_=0.4):
+        n_samples = time_ / ts
+        arts = np.array([list(art)] * int(n_samples))
         return self.get_sound(arts)
 
     def play_sound(self, sound):  # keep in mind that DivaMatlab works with ts=0.005
         import pyaudio
+        self.release_audio_device()
         self.pa = pyaudio.PyAudio()  # If pa and stream are not elements of the self object then sound does not play
         self.stream = self.pa.open(format=pyaudio.paFloat32,
                                    channels=1,
@@ -768,8 +779,10 @@ def arr_minus_noise(arr, noise_magnitude=0.):
     if global_noise:
         return array([x - random.random() for x in arr])
 
+
 def arr_plus_cte(arr, cte):
     return array([x + cte for x in arr])
+
 
 def sub_array(x, idx_x=np.inf, idx_y=np.inf):
     # This function supports floats, array(n,1) or array(n > 1, m > 1)

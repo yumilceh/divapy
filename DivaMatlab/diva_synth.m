@@ -168,7 +168,7 @@ while time<(ndata+1)*dt;
 %             u=1*.010*(synth.pressure+synth.pressurebuildup)*randn(synth.samplesperperiod,1);
 %         end
         v0=real(ifft(fft(u).*synth.filt_closure));
-        fprintf('time: %d, sum  v0 %d: \n',time, sum(v0) )
+%         fprintf('time: %d, sum  v0 %d: \n',time, sum(v0) )
         numberofperiods=numberofperiods-1;
         synth.pressure=synth.pressure/10;
         vnew=v0(1:synth.samplesperperiod);
@@ -186,7 +186,7 @@ while time<(ndata+1)*dt;
         if minaf0>0&&minaf0<=k, u=minaf/k*u+(1-minaf/k)*.0*synth.pressure*randn(synth.samplesperperiod,1); end
 
         v=real(ifft(fft(u).*synth.filt));
-                fprintf('time: %d, sum  v %d: \n',time, sum(v) )
+%                 fprintf('time: %d, sum  v %d: \n',time, sum(v) )
 
 %         display(synth.filt)
 %         fprintf('time %d: sum_v %d \n', time, sum(v))

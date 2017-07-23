@@ -27,34 +27,14 @@ if __name__ == '__main__':
 
     art = h5_to_ndarray('arts','../data/hard_arts.h5')
 
-    # art = [0.1]*10 + [1]*3
 
-    # Using get_sample
-    aud, som, outline, af, d = diva_synth.get_sample(np.array(art[0,:]))
-    print(aud)
-    print(som)
-    print(af)
-
-    # Using get_audsom
-    arts = np.tile(art, (100,1))
-    aud, som, outline, af = diva_synth.get_audsom(arts.transpose())
-    fig1, ax1 = plt.subplots(2,2)
-    plt.sca(ax1[0, 0])
-    plt.plot(aud)
-    plt.sca(ax1[0, 1])
-    plt.plot(som)
-
-    # Using plot_outline
-    diva_synth.plot_outline(art, axes=ax1[1, 0])
-
-    # Using get_sound  and play_sound
     sound = diva_synth.get_sound(art)
     sound2 = diva_synth_ml.get_sound(art)
-    plt.sca(ax1[1, 1])
+    fig = plt.figure()
     plt.plot(sound)
     plt.hold(True)
     plt.plot(sound2)
     diva_synth.play_sound(sound)
-
+    plt.plot(np.subtract(sound,sound2))
     plt.show()
     time.sleep(1)

@@ -26,68 +26,45 @@ def get_random_motor_set(system, n_samples):
     return motor_commands
 
 pydiva_synth = PyDiva()
-mldiva_synth = MlDiva()
+mldiva_synth = PyDiva()
 
-n_static_test = 100
-n_static_sound_test = 100
-n_random_sound_test = 100
+foo = MlDiva()
 
-static_test = True
+n_static_test = 1
+n_static_sound_test = 1
+n_random_sound_test = 200
+
+static_test = False
 static_sound_test = True
 random_sound_test = True
 
+
+
 if __name__ == '__main__':
-    static_commands = get_random_motor_set(mldiva_synth,
-                                           n_static_test)
-
-    print("Validating with static samples...")
-    for i in range(n_static_test):
-        try:
-            Aud_ml, Som_ml, Outline_ml, af_ml = mldiva_synth.get_audsom(static_commands[i, :])
-            Aud, Som, Outline, af = pydiva_synth.get_audsom(static_commands[i, :])
-        except ValueError:
-            print(static_commands[i, :])
-            sys.exit()
-        err_aud = np.linalg.norm(Aud_ml - Aud)
-        err_som = np.linalg.norm(Som_ml - Som)
-        err_ol = np.linalg.norm(np.nan_to_num(Outline_ml - Outline))
-        err_af = np.linalg.norm(af_ml - af)
-
-        if err_aud > 1e-3 or err_som > 1e-3 or err_ol > 1e-3 or err_af > 1e-3:
-            print("Validation failed in static test.")
-            print(err_aud)
-            print(err_som)
-            print(err_ol)
-            print(err_af)
-            print(static_commands[i, :])
-            static_test = False
-    if static_test:
-        print("Validation in static test OK.")
-
-    static_commands = get_random_motor_set(mldiva_synth,
+    static_commands = get_random_motor_set(foo,
                                            n_static_sound_test)
+
     print("Validating with static sound samples...")
     for i in range(n_static_sound_test):
         m_tmp = static_commands[i, :]
         arts = np.tile(m_tmp, (80, 1))
 
-        sound_wave_ml = mldiva_synth.get_sound(arts)
-
-        sound_wave = pydiva_synth.get_sound(arts)
+        sound_wave1 = mldiva_synth.get_sound(arts)
+        sound_wave2 = pydiva_synth.get_sound_opt(arts)
         # try:
         #
         # except ValueError:
         #     print(m_tmp)
         #     sys.exit()
-        err_sw = np.linalg.norm(sound_wave_ml - sound_wave)
+        err_sw = np.linalg.norm(sound_wave1 - sound_wave2)
 
         if err_sw > 1e-3:
             print("Validation failed in static sound test.")
             print(err_sw)
             plt.figure()
-            plt.plot(sound_wave_ml, 'b')
+            plt.plot(sound_wave1, 'b')
             plt.hold(True)
-            plt.plot(sound_wave, 'r')
+            plt.plot(sound_wave2, 'r')
             plt.legend(['Matlab', 'Python'])
             plt.show()
             static_sound_test = False
@@ -97,24 +74,24 @@ if __name__ == '__main__':
 
     print("Validating with random sound samples...")
     for i in range(n_random_sound_test):
-        arts = get_random_motor_set(mldiva_synth, 80)
+        arts = get_random_motor_set(foo, 80)
 
-        sound_wave_ml = mldiva_synth.get_sound(arts)
         try:
-            sound_wave = pydiva_synth.get_sound(arts)
+            sound_wave1 = pydiva_synth.get_sound(arts)
+            sound_wave2 = mldiva_synth.get_sound_opt(arts)
         except ValueError:
             print(arts)
             sys.exit()
-        err_sw = np.linalg.norm(sound_wave_ml - sound_wave)
+        err_sw = np.linalg.norm(sound_wave2 - sound_wave1)
 
         if err_sw > 1e-3:
             print("Validation failed in random sound test.")
             print(err_sw)
             print(arts)
             plt.figure()
-            plt.plot(sound_wave_ml, 'b')
+            plt.plot(sound_wave2, 'b')
             plt.hold(True)
-            plt.plot(sound_wave, 'r')
+            plt.plot(sound_wave1, 'r')
             plt.legend(['Matlab', 'Python'])
             plt.show(block=True)
 

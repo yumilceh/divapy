@@ -1,8 +1,8 @@
-'''
+"""
 Created on Feb 5, 2016
 This sensorimor system defines the DIVA agent used for the CCIA 2015's paper
 @author: Juan Manuel Acevedo Valle
-'''
+"""
 
 # import sys
 # import wave

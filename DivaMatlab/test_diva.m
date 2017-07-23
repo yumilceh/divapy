@@ -11,11 +11,16 @@ clc
 load soundtest
 arts = Arts2;
 
-[s,a,b,c] = diva_synth([arts, arts]','audsom');
+% [s,a,b,c] = diva_synth([arts, arts]','audsom');
+% tic
+% for i=1:1000
+ s = diva_synth(arts','sound');
+% end
+% toc
 
 % sound(s,11025)
-% figure,
-% plot(s,'r')
-% hold on
-% plot(Aud2,'b')
-% legend('Matlab', 'Python')
+figure,
+plot(s,'r')
+hold on
+plot(Aud2,'b')
+legend('Matlab', 'Python')

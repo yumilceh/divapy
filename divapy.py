@@ -17,7 +17,13 @@ import random
 import numpy as np
 from numpy import tanh, array, fft
 from scipy.io import loadmat as loadmat
-from numpy_groupies.aggregate_weave import aggregate
+from sys import platform
+# if platform == "linux" or platform == "linux2":
+#     from numpy_groupies.aggregate_weave import aggregate
+# elif platform == "win32":
+from numpy_groupies.aggregate_numpy import aggregate
+
+
 from voiceboxpy import glotlf
 from scipy.io.wavfile import write
 import time
@@ -767,8 +773,8 @@ class Diva(object):
         idx_wallab2 = np.int_(np.maximum(np.zeros((len(iwall),)), np.minimum(((fact * 9) - 1) * np.ones((len(iwall),)),
                                                                              np.ceil(fact * 9 * (
                                                                                  a[iwall] - amin) / amax) - 1)))
-        wallab1 = aggregate(idx_wallab1, b[oall], size=fact * 9, func='min', fill_value=None)
-        wallab2 = aggregate(idx_wallab2, b[iwall], size=fact * 9, func='max', fill_value=None)
+        wallab1 = aggregate(idx_wallab1, b[oall], size=fact * 9, func='min', fill_value=np.nan)
+        wallab2 = aggregate(idx_wallab2, b[iwall], size=fact * 9, func='max', fill_value=np.nan)
 
         lipsab1 = np.nanmin(b[olips])
         lipsab2 = np.nanmax(b[ilips])
@@ -789,8 +795,8 @@ class Diva(object):
                                      np.minimum((amax - 1) * np.ones((len(iall),)),
                                                 np.round(a[iall] - amin - 1)))).astype(int)
 
-        ab1 = aggregate(idx_ab1, b[oall], size=amax, func='min', fill_value=None)
-        ab2 = aggregate(idx_ab2, b[iall], size=amax, func='max', fill_value=None)
+        ab1 = aggregate(idx_ab1, b[oall], size=amax, func='min', fill_value=np.nan)
+        ab2 = aggregate(idx_ab2, b[iall], size=amax, func='max', fill_value=np.nan)
 
         ab1[np.isnan(ab1)] = np.inf
         ab2[np.isnan(ab2)] = -np.inf

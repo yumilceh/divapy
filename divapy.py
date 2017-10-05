@@ -18,10 +18,10 @@ import numpy as np
 from numpy import tanh, array, fft
 from scipy.io import loadmat as loadmat
 from sys import platform
-# if platform == "linux" or platform == "linux2":
-#     from numpy_groupies.aggregate_weave import aggregate
-# elif platform == "win32":
-from numpy_groupies.aggregate_numpy import aggregate
+if platform == "linux" or platform == "linux2":
+    from numpy_groupies.aggregate_weave import aggregate
+elif platform == "win32":
+    from numpy_groupies.aggregate_numpy import aggregate
 
 
 from voiceboxpy import glotlf

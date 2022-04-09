@@ -1,6 +1,6 @@
 # divapy README #
 
-DIVA Vocal tract. Python migration. Implemented as part of:
+DIVA/Maeda Vocal tract. Python migration. Implemented as part of:
 
 * J. M. Acevedo-Valle; C. Angulo; C. Moulin-Frier, ["Autonomous Discovery of Motor Constraints in an Intrinsically-Motivated Vocal Learner,"](http://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=7914655&isnumber=7422051) in IEEE Transactions on Cognitive and Developmental Systems , vol.PP, no.99, pp.1-1
 doi: 10.1109/TCDS.2017.2699578
